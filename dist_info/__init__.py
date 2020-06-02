@@ -115,6 +115,16 @@ def find_link(dist):
 	return None
 
 
+def files_in_dir(root_dir):
+	ret = []
+	for catalog, dirs, files in os.walk(root_dir):
+		for i in files:
+			path = os.path.join(catalog, i)
+			if os.path.isfile(path):
+				ret.append(path)
+	return ret
+
+
 def files(dist):
 	''' Файлы с абсолютными путями '''
 	dist_dir, egg_dir = dist_info_paths(dist)
@@ -138,20 +148,15 @@ def files(dist):
 
 	if not ret:
 		src_dir = os.path.join(dist_dir, get_dist_name(egg_dir))
-
-		for catalog, dirs, files in os.walk(src_dir):
-			for i in files:
-				path = os.path.join(catalog, i)
-				if os.path.isfile(path):
-					ret.append(path)
+		ret += files_in_dir(src_dir)
 
 	return list(sorted(ret))
 
 
-def modules(dist):
-	''' Возвращает модули установленного пакета '''
-	dist_dir, egg_dir = dist_info_paths(dist)
-	ls = files(dist)
+def modules_in_dir(dist_dir, ls = None):
+	''' Модули в директории '''
+	if not ls:
+		ls = files_in_dir(dist_dir)
 
 	count = len(dist_dir)+1
 	ls = [ s[count:] for s in ls if s.startswith(dist_dir) ]
@@ -161,3 +166,21 @@ def modules(dist):
 			for file in ls if file.endswith(".py") )
 
 	return ls
+
+
+def modules(dist):
+	''' Возвращает модули установленного пакета '''
+	dist_dir, egg_dir = dist_info_paths(dist)
+	ls = files(dist)
+	return modules_in_dir(dist_dir, ls)
+
+	count = len(dist_dir)+1
+	ls = [ s[count:] for s in ls if s.startswith(dist_dir) ]
+
+	ls = ( (file[:-12] if file.endswith('/__init__.py') else file[:-3] )
+		.replace('/', '.')
+			for file in ls if file.endswith(".py") )
+
+	return ls
+
+
