@@ -173,14 +173,3 @@ def modules(dist):
 	dist_dir, egg_dir = dist_info_paths(dist)
 	ls = files(dist)
 	return modules_in_dir(dist_dir, ls)
-
-	count = len(dist_dir)+1
-	ls = [ s[count:] for s in ls if s.startswith(dist_dir) ]
-
-	ls = ( (file[:-12] if file.endswith('/__init__.py') else file[:-3] )
-		.replace('/', '.')
-			for file in ls if file.endswith(".py") )
-
-	return ls
-
-
