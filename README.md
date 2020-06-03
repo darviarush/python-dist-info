@@ -4,17 +4,18 @@ dist-info - получить информацию об установленно�
 
 # VERSION
 
-0.0.2
+0.0.3
 
 # SYNOPSIS
 
-```sh
-# Устанавливаваем некий модуль:
-pip install pytest
-```
-
 ```python
-from dist_info import dists, metadata, files, modules, modules_in_dir
+# Устанавливаваем некий модуль:
+$ pip install pytest
+
+# И затем в питоне:
+# @@ examples.py
+from dist_info import dists, metadata, files, modules, \
+	modules_in_dir, modules_from
 
 # Список всех установленных пакетов:
 packages = dists()
@@ -44,6 +45,10 @@ meta_dict = metadata(DIST_NAME)
 # Получаем модули в указанном каталоге:
 the_modules = modules_in_dir(".")
 # -> ['x', 'x.y', 'x.y.z', ...]
+
+# Получаем подмодули модуля (например, io.six - ищется в sys.path):
+the_modules = modules_from("io.six")
+# -> ['io.six.bar', 'io.six.bar.baz', ...]
 ```
 
 # DESCRIPTION
@@ -82,6 +87,9 @@ $ dist-info <дистрибутив> modules
 
 Вывести модули по указанному пути:
 $ dist-info <каталог> mod
+
+Вывести подмодули модуля (например, io.six - ищется в sys.path):
+$ dist-info <модуль> mods
 ```
 
 # INSTALL
