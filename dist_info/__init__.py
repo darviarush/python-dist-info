@@ -193,11 +193,11 @@ def modules_from(module):
 
 def imports(modules, *av, **kw):
 	''' импортирует все указанные модули '''
-	for module in modules:
-		__import__(module, *av, **kw)
+	return [__import__(module, *av, **kw) for module in modules ]
 
 
 def imports_from(module, **kw):
 	''' импортирует все указанные модули '''
-	imports( modules_from(module), *av, **kw )
-
+	mod = modules_from(module)
+	imp = imports(mod, *av, **kw )
+	return mod, imp 

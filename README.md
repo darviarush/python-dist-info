@@ -54,10 +54,11 @@ the_modules = modules_from("io.six")
 # импортирует все указанные модули в текущий модуль (тут в examples.py)
 # остальные параметры принимает те же, что и __import__
 # imports(modules, globals=None, locals=None, fromlist=(), level=0)
-imports(the_modules)
+# возвращает список результатов __import__
+import_returns = imports(the_modules)
 
-# Есть сокращение для imports( modules_from(module) ):
-imports_from("io.six")
+# Есть сокращение для imports( modules_from(module), *av, **kw ):
+the_modules, import_returns = imports_from("io.six")
 ```
 
 # DESCRIPTION
