@@ -173,3 +173,15 @@ def modules(dist):
 	dist_dir, egg_dir = dist_info_paths(dist)
 	ls = files(dist)
 	return modules_in_dir(dist_dir, ls)
+
+
+def modules_from(module):
+	''' выводит все модули от рутового модуля '''
+	root = module.replace('.', '/')
+	ret = []
+	for syspath in sys.path:
+		if os.path.isdir(syspath):
+			path = os.path.join(syspath, root)
+			if os.path.isdir(path):
+				ret += [ f"{module}.{i}" for i in modules_in_dir(path) ]
+	return ret

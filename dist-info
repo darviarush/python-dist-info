@@ -32,13 +32,17 @@ usage = """
     $ dist-info <дистрибутив> modules
 
     Вывести модули по указанному пути:
-    $ dist-info <каталог> mod
+    $ dist-info <путь> mod
+
+    Вывести подмодули модуля (например, io.six - ищется в sys.path):
+    $ dist-info <модуль> mods
 
 """
 
 from data_printer import p
 from dist_info import DistNotFound, metadata, dists, \
-    dist_info_paths, files, modules, modules_in_dir
+    dist_info_paths, files, modules, modules_in_dir, \
+    modules_from
 import sys
 
 
@@ -99,6 +103,8 @@ try:
         print_list( modules(av[1]) )
     elif av[2] == 'mod':
         print_list( modules_in_dir(av[1]) )
+    elif av[2] == 'mods':
+        print_list( modules_from(av[1]) )
     else:
         print(usage)
 
