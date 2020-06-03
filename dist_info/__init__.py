@@ -183,5 +183,9 @@ def modules_from(module):
 		if os.path.isdir(syspath):
 			path = os.path.join(syspath, root)
 			if os.path.isdir(path):
-				ret += [ f"{module}.{i}" for i in modules_in_dir(path) ]
+				for i in modules_in_dir(path):
+					if i == '__init__':
+						ret.append( module )
+					else:
+						ret.append( f"{module}.{i}" )
 	return ret
