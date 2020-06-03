@@ -189,3 +189,15 @@ def modules_from(module):
 					else:
 						ret.append( f"{module}.{i}" )
 	return ret
+
+
+def imports(modules, *av, **kw):
+	''' импортирует все указанные модули '''
+	for module in modules:
+		__import__(module, *av, **kw)
+
+
+def imports_from(module, **kw):
+	''' импортирует все указанные модули '''
+	imports( modules_from(module), *av, **kw )
+

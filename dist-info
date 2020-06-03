@@ -29,20 +29,22 @@ usage = """
     $ dist-info <дистрибутив> files
     
     Вывести модули:
-    $ dist-info <дистрибутив> modules
+    $ dist-info [-c|--check] <дистрибутив> modules
 
     Вывести модули по указанному пути:
-    $ dist-info <путь> mod
+    $ dist-info [-c|--check] <путь> mod
 
     Вывести подмодули модуля (например, io.six - ищется в sys.path):
-    $ dist-info <модуль> mods
+    $ dist-info [-c|--check] <модуль> mods
+
+    Опция -с, --check импортирует все модули после их распечатки.
 
 """
 
 from data_printer import p
 from dist_info import DistNotFound, metadata, dists, \
     dist_info_paths, files, modules, modules_in_dir, \
-    modules_from
+    modules_from, imports
 import sys
 
 
@@ -56,12 +58,12 @@ av = [a for a in sys.argv if not a or a and a[0] != '-']
 
 try:
 
+    mod = []
+
     if '-h' in options or '--help' in options:
         print(usage)
     if '-s' in options or '--syspath' in options:
         print_list(sys.path)
-    elif options:
-        print(f"Неизвестная опция {options.keys()[0]}", file=sys.stderr)
     elif len(av) > 3:
         print(f"Слишком много аргументов", file=sys.stderr)
     elif 1 == len(av):
@@ -100,14 +102,20 @@ try:
     elif av[2] == 'files':
         print_list( files(av[1]) )
     elif av[2] == 'modules':
-        print_list( modules(av[1]) )
+        mod = modules(av[1])
+        print_list( mod )
     elif av[2] == 'mod':
-        print_list( modules_in_dir(av[1]) )
+        mod = modules_in_dir(av[1])
+        print_list( mod )
     elif av[2] == 'mods':
-        print_list( modules_from(av[1]) )
+        mod = modules_from(av[1])
+        print_list( mod )
     else:
         print(usage)
 
+    if ('-c' in options or '--check' in options) and mod:
+        imports(mod)
+        print("Все модули импортированы успешно", file=sys.stderr)
 
 except DistNotFound as e:
     print(f"Пакет не найден / {e}", file=sys.stderr)

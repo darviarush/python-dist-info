@@ -4,7 +4,7 @@ dist-info - получить информацию об установленно�
 
 # VERSION
 
-0.0.4
+0.0.5
 
 # SYNOPSIS
 
@@ -15,7 +15,8 @@ $ pip install pytest
 # И затем в питоне:
 # @@ examples.py
 from dist_info import dists, metadata, files, modules, \
-	modules_in_dir, modules_from
+	modules_in_dir, modules_from, \
+	imports, imports_from
 
 # Список всех установленных пакетов:
 packages = dists()
@@ -49,6 +50,14 @@ the_modules = modules_in_dir(".")
 # Получаем подмодули модуля (например, io.six - ищется в sys.path):
 the_modules = modules_from("io.six")
 # -> ['io.six.bar', 'io.six.bar.baz', ...]
+
+# импортирует все указанные модули в текущий модуль (тут в examples.py)
+# остальные параметры принимает те же, что и __import__
+# imports(modules, globals=None, locals=None, fromlist=(), level=0)
+imports(the_modules)
+
+# Есть сокращение для imports( modules_from(module) ):
+imports_from("io.six")
 ```
 
 # DESCRIPTION
@@ -83,13 +92,13 @@ $ dist-info <дистрибутив> meta
 $ dist-info <дистрибутив> files
 
 Вывести модули:
-$ dist-info <дистрибутив> modules
+$ dist-info [-c|--check] <дистрибутив> modules
 
 Вывести модули по указанному пути:
-$ dist-info <каталог> mod
+$ dist-info [-c|--check] <каталог> mod
 
 Вывести подмодули модуля (например, io.six - ищется в sys.path):
-$ dist-info <модуль> mods
+$ dist-info [-c|--check] <модуль> mods
 ```
 
 # INSTALL
