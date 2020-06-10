@@ -4,13 +4,13 @@ dist-info - получить информацию об установленно�
 
 # VERSION
 
-0.0.5
+0.0.7
 
 # SYNOPSIS
 
 ```python
 # Устанавливаваем некий модуль:
-$ pip install pytest
+$ pip3 install pytest
 
 # И затем в питоне:
 # @@ examples.py
@@ -105,7 +105,7 @@ $ dist-info [-c|--check] <модуль> mods
 # INSTALL
 
 ```sh
-$ pip install dist-info
+$ pip3 install dist-info
 ```
 
 # REQUIREMENTS
