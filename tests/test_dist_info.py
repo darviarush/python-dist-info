@@ -12,7 +12,7 @@ class DistInfoTestCase(unittest.TestCase):
 
         self.assertEqual(123, 123, '')
 
-    
+
 if __name__ == '__main__':
     unittest.main()
 

@@ -16,8 +16,11 @@ usage = """
     Вывести сводную информацию о дистрибутиве:
     $ dist-info <дистрибутив>
 
-    Вывести каталог в котором находятся модули пакета:
+    Вывести каталог в котором находятся каталоги с модулями пакета:
     $ dist-info <дистрибутив> dist
+
+    Вывести каталоги в котором находятся модули пакета:
+    $ dist-info <дистрибутив> src
 
     Вывести путь к файлу или каталогу с метаинформацией:
     $ dist-info <дистрибутив> egg
@@ -43,7 +46,8 @@ usage = """
 
 from data_printer import p
 from dist_info import DistNotFound, metadata, dists, \
-    dist_info_paths, files, modules, modules_in_dir, \
+    dist_info_paths, files, src, \
+    modules, modules_in_dir, \
     modules_from, imports
 import sys
 
@@ -73,6 +77,7 @@ try:
         dist_dir, egg_dir = dist_info_paths(av[1])
         f = "\n    ".join(files(av[1]))
         m = "\n    ".join(modules(av[1]))
+        src_dirs = "\n    ".join(src(av[1]))
         print(f"""
 
 Файлы:
@@ -87,6 +92,10 @@ try:
 
     {dist_dir}
 
+Каталоги с файлами пакета:
+
+    {src_dirs}
+
 Путь к метаинформации:
 
     {egg_dir}
@@ -97,6 +106,9 @@ try:
     elif av[2] == 'dist':
         dist_dir, egg_dir = dist_info_paths(av[1])
         print(dist_dir)
+    elif av[2] == 'src':
+        for src_dir in src(av[1]):
+            print(src_dir)
     elif av[2] == 'meta':
         dist_dir, egg_dir = dist_info_paths(av[1])
         p(metadata(egg_dir))

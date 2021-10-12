@@ -4,7 +4,7 @@ dist-info - получить информацию об установленно�
 
 # VERSION
 
-0.0.7
+0.1.1
 
 # SYNOPSIS
 
@@ -14,7 +14,9 @@ $ pip3 install pytest
 
 # И затем в питоне:
 # @@ examples.py
-from dist_info import dists, metadata, files, modules, \
+from dist_info import dists, \
+	src, src_path, dist_info_paths, egg, dist_path, \
+	metadata, files, modules, \
 	modules_in_dir, modules_from, \
 	imports, imports_from
 
@@ -24,18 +26,36 @@ packages = dists()
 
 DIST_NAME = 'pytest'
 
-# Получаем каталоги с модулями пакета и путь к метаинформации 
-# (может быть как файлом, так и каталогом)
+# Получаем пути к каталогам с файлами пакета:
+src_dirs = src(DIST_NAME)
+# -> ['/home/dart/.local/lib/python3.6/site-packages/pytest']
+
+# Получаем путь к последнему каталогу с файлами пакета:
+src_dir = src_path(DIST_NAME)
+# -> '/home/dart/.local/lib/python3.6/site-packages/pytest'
+
+# Обычно у пакета только один такой каталог, но у пакетов cryptography или bcrypt, например, по несколько.
+
+# Получаем каталоги с подкаталогами пакета и путь к метаинформации
+# (может быть как файлом, так и каталогом):
 dist_dir, egg_dir = dist_info_paths(DIST_NAME)
-# -> '/home/dart/.local/lib/python3.6/site-packages', 
+# -> '/home/dart/.local/lib/python3.6/site-packages',
 #    '/home/dart/.local/lib/python3.6/site-packages/pytest-5.4.1.dist-info'
+
+# Для краткости были сделаны функции dist_path и egg, возвращающие dist_dir и egg_dir соответственно:
+
+dist_dir = dist_path(DIST_NAME)
+# -> '/home/dart/.local/lib/python3.6/site-packages'
+
+egg_dir = egg(DIST_NAME)
+# -> '/home/dart/.local/lib/python3.6/site-packages/pytest-5.4.1.dist-info'
 
 # Получаем файлы
 package_files = files(DIST_NAME)
 # [ '/home/dart/.local/lib/python3.6/site-packages/../../../bin/py.test',
 #   '/home/dart/.local/lib/python3.6/site-packages/../../../bin/pytest', ... ]
 
-# Получаем модули пакета
+# Получаем модули пакета:
 package_modules = modules(DIST_NAME)
 # -> ['_pytest', '_pytest._argcomplete', ...]
 

@@ -74,7 +74,7 @@ def dists():
 
 def dist_info_paths(dist):
 	''' Возвращает путь к информации о пакете и папке с исходниками '''
-	re_dist = re.compile(r'^' + dist.replace('-', '[_-]') + r'[-.]')
+	re_dist = re.compile(r'^' + dist.replace('-', '[_-]') + r'[-.]', re.I)
 
 	for syspath in sys.path:
 		if os.path.isdir(syspath):
@@ -95,6 +95,19 @@ def dist_info_paths(dist):
 	raise DistNotFound(dist)
 
 
+def dist_path(dist):
+	''' Возвращает путь к каталогу с яйцом '''
+	dist_dir, egg_dir = dist_info_paths(dist)
+	return dist_dir
+
+
+def egg(dist):
+	''' Возвращает путь к каталогу яйца '''
+	dist_dir, egg_dir = dist_info_paths(dist)
+	return egg_dir
+
+
+
 RE_DIST_NAME = re.compile(r'^(\w+)')
 def get_dist_name(egg_dir):
 	m = RE_DIST_NAME.match( os.path.basename(egg_dir) )
@@ -111,7 +124,7 @@ def find_link(dist):
 			for s in os.listdir(syspath):
 				if s == maybe:
 					with open(os.path.join(syspath, s)) as f:
-						return [ l.rstrip("\r\n") for l in f.readlines() ] 
+						return [ l.rstrip("\r\n") for l in f.readlines() ]
 	return None
 
 
@@ -123,6 +136,22 @@ def files_in_dir(root_dir):
 			if os.path.isfile(path):
 				ret.append(path)
 	return ret
+
+
+def src(dist):
+	''' Относительные пути к каталогам с файлами пакета '''
+	dist_dir, egg_dir = dist_info_paths(dist)
+	dirs = read_file(egg_dir, ["top_level.txt"])
+	if dirs:
+		return [os.path.join(dist_dir, i) for i in dirs]
+	src_dir = os.path.join(dist_dir, get_dist_name(egg_dir))
+	return [src_dir] if os.path.is_dir(src_dir) else []
+
+
+def src_path(dist):
+	''' Путь к последнему каталогу с файлами пакета '''
+	src_dirs = src(dist)
+	return src_dirs[-1] if src_dirs else None
 
 
 def files(dist):
@@ -147,8 +176,8 @@ def files(dist):
 				ret.append(path)
 
 	if not ret:
-		src_dir = os.path.join(dist_dir, get_dist_name(egg_dir))
-		ret += files_in_dir(src_dir)
+		for src_dir in src(dist):
+			ret += files_in_dir(src_dir)
 
 	return list(sorted(ret))
 
